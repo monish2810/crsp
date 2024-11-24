@@ -365,7 +365,7 @@ async function updateNotificationStatus(notificationId, resourceId, status) {
     alert(`Notification ${status.toLowerCase()} and transaction deleted successfully.`);
 
     // Refresh notifications
-    fetchBuyerNotifications();
+
   } catch (error) {
     console.error("Error updating notification status:", error);
     alert("Failed to update notification status. Please try again.");
