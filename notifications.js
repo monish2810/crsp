@@ -35,7 +35,7 @@ const db = getDatabase(app);
 
 let currentUser = null;
 
-// Set Persistence
+// Set Persistence for Authentication
 setPersistence(auth, browserLocalPersistence).catch((error) =>
   console.error("Error setting persistence:", error)
 );
@@ -66,7 +66,7 @@ function encodeEmail(email) {
   return email.replace(/\./g, "_");
 }
 
-// Fetch and Display Resources
+// Display Resources Function
 function displayResource(resourceData, resourceId) {
   const resourceContainer = document.getElementById("resourceContainer");
 
@@ -74,14 +74,9 @@ function displayResource(resourceData, resourceId) {
   card.className = "resource-card";
 
   const img = document.createElement("img");
-  if (
-    resourceData.imageBase64 &&
-    resourceData.imageBase64.startsWith("data:image")
-  ) {
-    img.src = resourceData.imageBase64;
-  } else {
-    img.src = "./assets/pic-1.jpg";
-  }
+  img.src = resourceData.imageBase64?.startsWith("data:image")
+    ? resourceData.imageBase64
+    : "./assets/pic-1.jpg";
   img.alt = resourceData.name || "Resource Image";
 
   img.addEventListener("click", () => {
@@ -118,8 +113,6 @@ function displayResource(resourceData, resourceId) {
   buyButton.className = "resource-card-buy font-weight-bold buy-button";
   buyButton.textContent = "Buy";
   buyButton.disabled = resourceData.seller === currentUser?.email;
-
-  // Assign the resourceId to the button's data attribute
   buyButton.dataset.resourceId = resourceId;
 
   footer.appendChild(seller);
@@ -132,10 +125,10 @@ function displayResource(resourceData, resourceId) {
   card.appendChild(footer);
   resourceContainer.appendChild(card);
 
-  // Add click event listener to the button
   buyButton.addEventListener("click", handleBuyButtonClick);
 }
 
+// Fetch and Display Resources from Database
 const resourcesRef = ref(db, "resources");
 onValue(resourcesRef, (snapshot) => {
   const resourceContainer = document.getElementById("resourceContainer");
@@ -143,18 +136,8 @@ onValue(resourcesRef, (snapshot) => {
 
   snapshot.forEach((childSnapshot) => {
     const resourceData = childSnapshot.val();
-    resourceData.id = childSnapshot.key; // Add the key as ID
-    displayResource(resourceData);
-  });
-});
-
-onValue(resourcesRef, (snapshot) => {
-  const resourceContainer = document.getElementById("resourceContainer");
-  resourceContainer.innerHTML = "";
-
-  snapshot.forEach((childSnapshot) => {
     const resourceId = childSnapshot.key;
-    const resourceData = childSnapshot.val();
+    resourceData.id = resourceId; // Add resource ID to data
     displayResource(resourceData, resourceId);
   });
 });
@@ -234,6 +217,7 @@ async function handleBuyButtonClick(event) {
   }
 }
 
+// Fetch and Display Buyer Notifications
 document
   .getElementById("notificationButton")
   .addEventListener("click", fetchBuyerNotifications);
@@ -241,33 +225,22 @@ document
 async function fetchBuyerNotifications() {
   const resourceContainer = document.getElementById("resourceContainer");
   resourceContainer.style.display = "none";
+
   if (!currentUser) {
     alert("You need to be logged in to view notifications.");
     return;
   }
 
   const buyerEmailEncoded = encodeEmail(currentUser.email);
-  console.log("Encoded Buyer Email:", buyerEmailEncoded); // Log the encoded email
-
-  // Fetch notifications for the buyer from the notifications node
   const buyerNotificationsRef = ref(db, `notifications/${buyerEmailEncoded}`);
+
   try {
     const snapshot = await get(buyerNotificationsRef);
-    console.log(snapshot);
-    console.log("*****");
+
     if (snapshot.exists()) {
       const buyerNotifications = snapshot.val();
-      console.log("Buyer Notifications:", buyerNotifications);
-
-      if (Object.keys(buyerNotifications).length > 0) {
-        displayNotifications(buyerNotifications); // Display relevant notifications
-      } else {
-        console.log("No notifications found for the buyer.");
-        document.getElementById("notifications").innerHTML =
-          "<p>No notifications available</p>";
-      }
+      displayNotifications(buyerNotifications);
     } else {
-      console.log("No notifications found for the buyer.");
       document.getElementById("notifications").innerHTML =
         "<p>No notifications available</p>";
     }
@@ -276,8 +249,7 @@ async function fetchBuyerNotifications() {
   }
 }
 
-// Call this function when the buyer opens the notifications page or clicks a button
-
+// Display Notifications
 function displayNotifications(notifications) {
   const container = document.getElementById("notificationContent");
   container.innerHTML = ""; // Clear previous notifications
@@ -294,80 +266,45 @@ function displayNotifications(notifications) {
         <button class="btn btn-sm accept-btn" onclick="updateNotificationStatus('${id}', '${
       data.resourceId
     }', 'Accepted')">Accept</button>
-<button class="btn btn-sm reject-btn" onclick="updateNotificationStatus('${id}', '${
+        <button class="btn btn-sm reject-btn" onclick="updateNotificationStatus('${id}', '${
       data.resourceId
     }', 'Rejected')">Reject</button>
-
       </div>
     `;
     container.appendChild(notificationElement);
   }
 }
-window.updateNotificationStatus = updateNotificationStatus;
-async function updateNotificationStatus(notificationId, resourceId, status) {
+
+// Update Notification Status (Accept/Reject)
+window.updateNotificationStatus = async function updateNotificationStatus(
+  notificationId,
+  resourceId,
+  status
+) {
   console.log("Notification ID:", notificationId);
   console.log("Resource ID:", resourceId);
 
   const encodedBuyerEmail = encodeEmail(currentUser.email);
 
   try {
-    // Fetch resource data
-    const resourceRef = ref(db, `resources/${resourceId}`);
-    const resourceSnapshot = await get(resourceRef);
+    const notificationRef = ref(
+      db,
+      `notifications/${encodedBuyerEmail}/${notificationId}`
+    );
+    const statusUpdate = {
+      status,
+    };
 
-    if (!resourceSnapshot.exists()) {
-      console.error("Resource not found:", resourceId);
-      alert("Resource not found.");
-      return;
-    }
+    await update(notificationRef, statusUpdate);
 
-    const resourceData = resourceSnapshot.val();
-
-    // Update transaction status
     const transactionRef = ref(db, `pendingTransactions/${notificationId}`);
-    await update(transactionRef, { status });
+    await update(transactionRef, {
+      status,
+    });
 
-    // Remove seller and buyer notifications
-    const encodedSellerEmail = encodeEmail(resourceData.seller);
-    await set(
-      ref(db, `notifications/${encodedSellerEmail}/${notificationId}`),
-      null
-    );
-    await set(
-      ref(db, `notifications/${encodedBuyerEmail}/${notificationId}`),
-      null
-    );
-
-    // Notify buyer if request is accepted
-    if (status === "Accepted") {
-      const buyerNotificationRef = ref(
-        db,
-        `notifications/${encodeEmail(resourceData.buyer)}/${notificationId}`
-      );
-      await set(buyerNotificationRef, {
-        message: `Your request for "${resourceData.name}" has been accepted.`,
-        resourceId,
-        status,
-        timestamp: new Date().toISOString(),
-      });
-
-      // Display pop-up to the buyer
-      alert(`Your request for "${resourceData.name}" has been accepted.`);
-    }
-
-    // Delete resource from database
-    await set(resourceRef, null);
-
-    // Delete the pending transaction
-    await set(ref(db, `pendingTransactions/${notificationId}`), null);
-
-    // Notify user of success
-    alert(`Notification ${status.toLowerCase()} and transaction deleted successfully.`);
-
-    // Refresh notifications
-
+    alert(`Notification updated to ${status}!`);
   } catch (error) {
-    console.error("Error updating notification status:", error);
-    alert("Failed to update notification status. Please try again.");
+    console.error("Error updating notification:", error);
+    alert("Failed to update notification status.");
   }
-}
+};
