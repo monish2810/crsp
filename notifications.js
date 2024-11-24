@@ -340,10 +340,7 @@ async function updateNotificationStatus(notificationId, resourceId, status) {
 
     // Notify the buyer if status is accepted
     if (status === "Accepted") {
-      const buyerNotificationRef = ref(
-        db,
-        `notifications/${encodeEmail(resourceData.buyer)}/${notificationId}`
-      );
+      alert("Your request is been accepted");
       await set(buyerNotificationRef, {
         message: `Your request for ${resourceData.name} has been accepted.`,
         resourceId,
