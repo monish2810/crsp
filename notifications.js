@@ -305,64 +305,66 @@ function displayNotifications(notifications) {
 }
 window.updateNotificationStatus = updateNotificationStatus;
 async function updateNotificationStatus(notificationId, resourceId, status) {
-  console.log(notificationId);
-  console.log(resourceId);
-  console.log(notificationId);
+  console.log("Notification ID:", notificationId);
+  console.log("Resource ID:", resourceId);
+
   const encodedBuyerEmail = encodeEmail(currentUser.email);
 
   try {
+    // Fetch resource data
     const resourceRef = ref(db, `resources/${resourceId}`);
     const resourceSnapshot = await get(resourceRef);
 
     if (!resourceSnapshot.exists()) {
-      console.log("Resource not found:", resourceId);
+      console.error("Resource not found:", resourceId);
       alert("Resource not found.");
       return;
     }
 
     const resourceData = resourceSnapshot.val();
 
+    // Update transaction status
     const transactionRef = ref(db, `pendingTransactions/${notificationId}`);
     await update(transactionRef, { status });
 
+    // Remove seller and buyer notifications
     const encodedSellerEmail = encodeEmail(resourceData.seller);
-    const sellerNotificationRef = ref(
-      db,
-      `notifications/${encodedSellerEmail}/${notificationId}`
+    await set(
+      ref(db, `notifications/${encodedSellerEmail}/${notificationId}`),
+      null
     );
-    await set(sellerNotificationRef, null);
-
-    const buyerNotificationRef = ref(
-      db,
-      `notifications/${encodedBuyerEmail}/${notificationId}`
+    await set(
+      ref(db, `notifications/${encodedBuyerEmail}/${notificationId}`),
+      null
     );
-    await set(buyerNotificationRef, null);
 
-    // Notify the buyer if status is accepted
+    // Notify buyer if request is accepted
     if (status === "Accepted") {
-      alert("Your request is been accepted");
+      const buyerNotificationRef = ref(
+        db,
+        `notifications/${encodeEmail(resourceData.buyer)}/${notificationId}`
+      );
       await set(buyerNotificationRef, {
-        message: `Your request for ${resourceData.name} has been accepted.`,
+        message: `Your request for "${resourceData.name}" has been accepted.`,
         resourceId,
         status,
         timestamp: new Date().toISOString(),
       });
+
+      // Display pop-up to the buyer
+      alert(`Your request for "${resourceData.name}" has been accepted.`);
     }
 
-    try {
-      const elementRef = ref(db, `resources/${resourceId}`);
-      await set(elementRef, null);
-    } catch (error) {
-      console.error(`Error deleting element at path "${path}":`, error);
-    }
+    // Delete resource from database
+    await set(resourceRef, null);
 
-    const transactionDataRef = ref(db, `pendingTransactions/${notificationId}`);
-    await set(transactionDataRef, null);
+    // Delete the pending transaction
+    await set(ref(db, `pendingTransactions/${notificationId}`), null);
 
-    alert(
-      `Notification ${status.toLowerCase()} and transaction deleted successfully.`
-    );
+    // Notify user of success
+    alert(`Notification ${status.toLowerCase()} and transaction deleted successfully.`);
 
+    // Refresh notifications
     fetchBuyerNotifications();
   } catch (error) {
     console.error("Error updating notification status:", error);
