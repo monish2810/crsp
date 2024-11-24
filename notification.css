@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+:root {
+  --main-color: #e77f67;
+  --magentapurple: #6d214f;
+  --red: #f20509;
+  --orange: #f97f51;
+  --white: #fff;
+  --black: #2c3a47;
+  --rosy-hightlight: #fae1a9;
+  --light-color-1: #f8efba;
+  --light-color-2: #e9ebed;
+  --light-color-3: #ede09f;
+  --hover-color: #afb1b3;
+  --border: 1rem solid rgba(0, 0, 0, 0.2);
+}
+
+* {
+  font-family: "Roboto", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+*::selection {
+  background-color: var(--main-color);
+  color: #fff;
+}
+
+*::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 1rem;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--main-color);
+}
+
+/* General styles for the notification card */
+.notification-card {
+  background-color: var(--rosy-hightlight);
+  border: solid 2px rgba(0, 0, 0, 0.2); /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 1rem; /* Spacing inside */
+  margin-top: 1rem;
+  margin-bottom: 1rem; /* Spacing between cards */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  font-family: Arial, sans-serif; /* Clean font */
+}
+
+/* Style for text elements */
+.notification-card div {
+  margin-bottom: 8px; /* Space between rows */
+  font-size: 14px; /* Text size */
+  color: #333; /* Text color */
+}
+
+/* Strong tags for labels (e.g., Buyer, Resource) */
+.notification-card strong {
+  font-weight: bold; /* Emphasize labels */
+  color: #555; /* Slightly darker color for contrast */
+}
+
+/* Button container styling */
+.button-container {
+  display: flex; /* Arrange buttons in a row */
+  justify-content: space-between; /* Space them apart */
+  gap: 10px; /* Space between buttons */
+}
+
+/* General button styles */
+.notification-card .btn {
+  padding: 8px 12px; /* Button padding */
+  font-size: 14px; /* Button text size */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded button edges */
+  cursor: pointer; /* Pointer cursor on hover */
+  color: white; /* Button text color */
+}
+.notification-card .accept-btn,
+.notification-card .reject-btn {
+  color: var(--black);
+  background-color: var(--light-color-1);
+}
+
+.notification-card .accept-btn:hover,
+.notification-card .reject-btn:hover {
+  background-color: var(--black);
+  color: var(--white);
+}

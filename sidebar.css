@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+:root {
+  --main-color: #e77f67;
+  --magentapurple: #6d214f;
+  --red: #f20509;
+  --orange: #f97f51;
+  --white: #fff;
+  --black: #2c3a47;
+  --rosy-hightlight: #fae1a9;
+  --light-color-1: #f8efba;
+  --light-color-2: #e9ebed;
+  --light-color-3: #ede09f;
+  --hover-color: #afb1b3;
+  --border: 1rem solid rgba(0, 0, 0, 0.2);
+}
+* {
+  font-family: "Roboto", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+*::selection {
+  background-color: var(--main-color);
+  color: #fff;
+}
+*::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 1rem;
+}
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--main-color);
+}
+.header-1 .flex .sidebar-body {
+  background-color: var(--light-color-1);
+}
+.header-1 .flex .sidebar-body .sidebar-header {
+  background-color: var(--rosy-hightlight);
+  border-bottom: var(--border);
+}
+.header-1 .flex .sidebar-body .sidebar-header .sidebar-heading {
+  font-size: 2.4rem;
+}
+.header-1 .flex .sidebar-body .sidebar-main a {
+  background-color: var(--light-color-1);
+  border: none;
+  font-size: 2rem;
+}
+.header-1 .flex .sidebar-body .sidebar-main a:hover {
+  background-color: var(--black);
+  color: var(--white);
+  padding-bottom: 0.4rem;
+}

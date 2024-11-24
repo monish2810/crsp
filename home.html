@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/sidebar.css" />
+    <link rel="stylesheet" href="./css/addresource.css" />
+    <link rel="stylesheet" href="./css/card.css" />
+    <link rel="stylesheet" href="./css/notification.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+  </head>
+  <body style="background-color: #ede09f">
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="./js/script.js"></script>
+    <script type="module" src="./js/dname.js"></script>
+    <script type="module" src="./js/addresource.js"></script>
+    <!-- <script type="module" src="./js/card.js"></script> -->
+    <script type="module" src="./js/notifications.js"></script>
+    <!-- header -->
+    <header class="header-1">
+      <section class="flex">
+        <button
+          class="logo"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasExample"
+          aria-controls="offcanvasExample"
+        >
+          CRSP
+        </button>
+        <div
+          class="offcanvas offcanvas-start sidebar-body"
+          tabindex="-1"
+          id="offcanvasExample"
+          aria-labelledby="offcanvasExampleLabel"
+        >
+          <div class="offcanvas-header sidebar-header">
+            <h5
+              class="offcanvas-title h5 sidebar-heading"
+              id="offcanvasExampleLabel"
+            >
+              <span id="userNameDisplay"></span>
+            </h5>
+            <button
+              type="button"
+              class="btn-close text-reset"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="offcanvas-body sidebar-main">
+            <div class="list-group list-group-flush sidebar-list">
+              <a
+                href="#"
+                class="list-group-item list-group-item-action lead"
+                id="notificationButton"
+                >View Notication</a
+              >
+              <a
+                href="#"
+                class="list-group-item list-group-item-action lead"
+                id="logoutButton"
+                >Logout</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <form action="" method="post" class="search-form">
+          <input
+            type="text"
+            name="search_box"
+            placeholder="Search resource...."
+            required
+            maxlength="100"
+          />
+          <button
+            type="submit"
+            class="fas fa-search"
+            name="search_box"
+          ></button>
+        </form>
+
+        <div class="icons">
+          <i class="lni lni-search-1" id="search-btn"></i>
+          <a href="#" id="addResource"><i class="lni lni-plus"></i></a>
+          <a href="home.html"><i class="lni lni-home-2"></i></a>
+          <a href="#"><i class="lni lni-emoji-grin" id="user-btn"></i></a>
+          <a href="#"><i class="lni lni-calendar-days"></i></a>
+        </div>
+
+        <div class="profile">
+          <img src="./asserts/pic-1.jpg" alt="" />
+          <h3 id="userProfileName"></h3>
+          <span>student</span>
+          <a href="profile.html" class="bttn">View profile</a>
+          <div class="flex-btn">
+            <a href="login.html" class="option-btn">login</a>
+            <a href="register.html" class="option-btn">register</a>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <div
+      id="resourceForm"
+      class="modal fade resourceform"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="addResourceTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addResourceTitle">Add Resource</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Your form content here -->
+            <form class="p-4 rounded SaveandPostbody" id="resourceFormContent">
+              <div class="form-group" id="nameGroup">
+                <label for="nameInput" id="nameLabel" class="lead"
+                  >Name of element</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nameInput"
+                  placeholder="Item name/ label"
+                />
+              </div>
+
+              <div class="form-group" id="categoryGroup">
+                <label for="categorySelect" id="categoryLabel"
+                  >Category of resource</label
+                >
+                <select class="form-control" id="categorySelect" required>
+                  <option disabled selected>Select a category</option>
+                  <option>Electronics</option>
+                  <option>Books</option>
+                  <option>Apron</option>
+                  <option>Record pads</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="descriptionGroup">
+                <label for="descriptionInput" id="descriptionLabel"
+                  >Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="descriptionInput"
+                  placeholder="Description"
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <div class="form-group" id="imageGroup">
+                <label for="imageInput" id="imageLabel">Image</label>
+                <input type="file" class="form-control-file" id="imageInput" />
+              </div>
+
+              <button type="button" id="saveFormButton" class="btn mb-3">
+                Save and Post
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <div id="resourceContainer" class="resource-container"></div>
+    </main>
+
+    <div
+      class="modal fade"
+      id="imageModal"
+      tabindex="-1"
+      aria-labelledby="imageModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <img
+              id="fullscreenImage"
+              src=""
+              alt="Fullscreen"
+              style="width: 100%; height: auto"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn-close position-absolute top-0 end-0 m-3"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <div id="notificationContent" class="modal-body"></div>
+  </body>
+</html>

@@ -1,0 +1,238 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+:root {
+  --main-color: #e77f67;
+  --magentapurple: #6d214f;
+  --red: #f20509;
+  --orange: #f97f51;
+  --white: #fff;
+  --black: #2c3a47;
+  --rosy-hightlight: #fae1a9;
+  --light-color-1: #f8efba;
+  --light-color-2: #e9ebed;
+  --light-color-3: #ede09f;
+  --hover-color: #afb1b3;
+  --border: 1rem solid rgba(0, 0, 0, 0.2);
+}
+
+* {
+  font-family: "Roboto", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+*::selection {
+  background-color: var(--main-color);
+  color: #fff;
+}
+
+*::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 1rem;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--main-color);
+}
+
+body {
+  background-color: var(--main-color);
+  background: linear-gradient(to right, #e2e2e2, #faffc9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: var(--light-color-1);
+  width: 90%;
+  max-width: 30rem;
+  padding: 1.5rem;
+  margin: 50px auto;
+  border-radius: 10px;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+}
+
+form {
+  margin: 0 2rem;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+input {
+  color: inherit;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-left: 1.5rem;
+  font-size: 15px;
+}
+
+.input-group {
+  padding: 1% 0;
+  position: relative;
+}
+
+.input-group i {
+  position: absolute;
+  color: var(--main-color);
+}
+
+input:focus {
+  background-color: transparent;
+  outline: transparent;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+input::placeholder {
+  color: transparent;
+}
+
+label {
+  color: var(--black);
+  position: relative;
+  left: 1.2em;
+  top: -1.3em;
+  cursor: auto;
+  transition: 0.3s ease all;
+}
+
+input:focus ~ label,
+input:not(:placeholder-shown) ~ label {
+  top: -3em;
+  color: var(--orange);
+  font-size: 15px;
+}
+
+button {
+  font-size: 1.1rem;
+  padding: 8px 0;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  width: 100%;
+  background: var(--main-color);
+  color: white;
+  cursor: pointer;
+  transition: 0.9s;
+}
+
+button:hover {
+  background: var(--black);
+}
+
+.or {
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.icons {
+  text-align: center;
+}
+
+.icons i {
+  color: var(--main-color);
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  margin: 0 15px;
+  transition: 1s;
+}
+
+.icons i:hover {
+  background: var(--black);
+  font-size: 1.6rem;
+  border: 2px solid rgb(125, 125, 235);
+}
+
+.links {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 4rem;
+  margin-top: 0.9rem;
+  font-weight: bold;
+}
+
+#signUpButton,
+#signInButton {
+  color: var(--main-color);
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+#signUpButton:hover,
+#signInButton:hover {
+  text-decoration: underline;
+  color: var(--black);
+}
+
+.messageDiv {
+  background-color: var(--main-color);
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  opacity: 0;
+  animation: fadeOut 7s forwards;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .form-title {
+    font-size: 1.3rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .icons i {
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.2rem;
+  }
+
+  .icons i {
+    padding: 0.3rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  .links {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+  }
+}
