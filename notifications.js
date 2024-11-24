@@ -338,6 +338,20 @@ async function updateNotificationStatus(notificationId, resourceId, status) {
     );
     await set(buyerNotificationRef, null);
 
+    // Notify the buyer if status is accepted
+    if (status === "Accepted") {
+      const buyerNotificationRef = ref(
+        db,
+        `notifications/${encodeEmail(resourceData.buyer)}/${notificationId}`
+      );
+      await set(buyerNotificationRef, {
+        message: `Your request for ${resourceData.name} has been accepted.`,
+        resourceId,
+        status,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     try {
       const elementRef = ref(db, `resources/${resourceId}`);
       await set(elementRef, null);
