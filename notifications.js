@@ -258,8 +258,12 @@ function displayNotifications(notifications) {
     const notificationElement = document.createElement("div");
     notificationElement.className = "notification-card mb-2 p-3";
 
+    // Correctly display the seller's email for buyer notifications
+    const participant = data.seller || data.buyer || "N/A";
+    const participantLabel = data.seller ? "Seller" : "Buyer";
+
     notificationElement.innerHTML = `
-      <div><strong>Buyer:</strong> ${data.buyer || "N/A"}</div>
+      <div><strong>${participantLabel}:</strong> ${participant}</div>
       <div><strong>Resource:</strong> ${data.resourceName || "N/A"}</div>
       <div><strong>Status:</strong> ${data.status || "Pending"}</div>
       <div class="mt-2">
@@ -281,28 +285,72 @@ window.updateNotificationStatus = async function updateNotificationStatus(
   resourceId,
   status
 ) {
-  console.log("Notification ID:", notificationId);
-  console.log("Resource ID:", resourceId);
-
-  const encodedBuyerEmail = encodeEmail(currentUser.email);
+  const encodedEmail = encodeEmail(currentUser.email);
 
   try {
+    // Update the notification status for the current user
     const notificationRef = ref(
       db,
-      `notifications/${encodedBuyerEmail}/${notificationId}`
+      `notifications/${encodedEmail}/${notificationId}`
     );
-    const statusUpdate = {
-      status,
+    await update(notificationRef, { status });
+
+    // Update the transaction status in `pendingTransactions`
+    const transactionRef = ref(db, `pendingTransactions/${notificationId}`);
+    const transactionSnapshot = await get(transactionRef);
+
+    if (!transactionSnapshot.exists()) {
+      alert("Transaction not found.");
+      return;
+    }
+
+    const transactionData = transactionSnapshot.val();
+
+    // Check if both buyer and seller have accepted
+    const buyerAccepted =
+      transactionData.buyer === currentUser.email && status === "Accepted";
+    const sellerAccepted =
+      transactionData.seller === currentUser.email && status === "Accepted";
+
+    const updatedStatus = {
+      ...transactionData,
+      [`${
+        currentUser.email === transactionData.buyer ? "buyer" : "seller"
+      }Status`]: status,
     };
 
-    await update(notificationRef, statusUpdate);
+    await update(transactionRef, updatedStatus);
 
-    const transactionRef = ref(db, `pendingTransactions/${notificationId}`);
-    await update(transactionRef, {
-      status,
-    });
+    if (
+      updatedStatus.buyerStatus === "Accepted" &&
+      updatedStatus.sellerStatus === "Accepted"
+    ) {
+      // Move transaction to history
+      const historyRef = ref(db, `historyTransactions/${notificationId}`);
+      await set(historyRef, { ...transactionData, status: "Completed" });
 
-    alert(`Notification updated to ${status}!`);
+      await set(transactionRef, null);
+      const encodedBuyerEmail = encodeEmail(transactionData.buyer);
+      const encodedSellerEmail = encodeEmail(transactionData.seller);
+
+      const buyerNotificationRef = ref(
+        db,
+        `notifications/${encodedBuyerEmail}/${notificationId}`
+      );
+      const sellerNotificationRef = ref(
+        db,
+        `notifications/${encodedSellerEmail}/${notificationId}`
+      );
+
+      await set(buyerNotificationRef, null);
+      await set(sellerNotificationRef, null);
+      const resourceRef = ref(db, `resources/${resourceId}`);
+      await set(resourceRef, null);
+
+      alert("Transaction completed and moved to history!");
+    } else {
+      alert(`Status updated to ${status}. Waiting for the other party.`);
+    }
   } catch (error) {
     console.error("Error updating notification:", error);
     alert("Failed to update notification status.");
