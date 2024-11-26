@@ -18,14 +18,14 @@ import {
 
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDn6vGYuT6S76C-MBSh3K5POXKOmVncI0U",
-  authDomain: "crsp-b37ed.firebaseapp.com",
-  databaseURL: "https://crsp-b37ed-default-rtdb.firebaseio.com",
-  projectId: "crsp-b37ed",
-  storageBucket: "crsp-b37ed.appspot.com",
-  messagingSenderId: "359516608789",
-  appId: "1:359516608789:web:d484b2e71c14d47242b11c",
-  measurementId: "G-LJJWEXSF1X",
+  apiKey: "YOUR-API",
+  authDomain: "YOUR-AUTHDOMAIN",
+  databaseURL: "YOUR-DATABASEURL",
+  projectId: "YOUR-PROJECT-ID",
+  storageBucket: "YOUR-STORAGEBUCKET",
+  messagingSenderId: "YOUR MESSAGINGSENDERID",
+  appId: "YOUR APPID",
+  measurementId: "YOUR MEASUREMENTID",
 };
 
 // Initialize Firebase
